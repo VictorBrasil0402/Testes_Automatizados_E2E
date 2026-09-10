@@ -1,0 +1,49 @@
+name: Cypress E2E Tests
+
+on: push
+
+jobs:
+
+  cypress-run:
+
+    strategy:
+      matrix:
+        project:
+          - name: BlazeDemo
+            directory: BlazeDemo/Testes_Cypress
+          - name: SauceDemo
+            directory: SauceDemo/Testes_Cypress
+
+    name: Cypress - ${{ matrix.project.name }}
+
+    runs-on: [self-hosted, linux]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v7
+        with:
+          working-directory: ${{ matrix.project.directory }}
+          spec: cypress/e2e/**/*.cy.js
+
+  cypress-run-xtracer:
+
+    name: Cypress - XTRacer
+
+    runs-on: [self-hosted, linux]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v7
+        with:
+          working-directory: XTRacer/Testes_Cypress
+          spec: cypress/e2e/login.cy.js,cypress/e2e/selecaoProdutos.cy.js
+        env:
+          CYPRESS_email: ${{ secrets.EMAIL }}
+          CYPRESS_senha: ${{ secrets.SENHA }}
+          CYPRESS_cep: ${{ secrets.CEP }}

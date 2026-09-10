@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "axios": "^1.15.1",
+    "gerador-br": "^1.2.4",
+    "mocha": "^11.7.5",
+    "selenium-webdriver": "^4.43.0"
+  }
+}
