@@ -1,0 +1,63 @@
+name: Selenium E2E Tests
+
+on: push
+
+jobs:
+
+  selenium-run:
+
+    strategy:
+      matrix:
+        project:
+          - name: BlazeDemo
+            directory: BlazeDemo/Testes_Selenium
+          - name: SauceDemo
+            directory: SauceDemo/Testes_Selenium
+        
+    name: Selenium - ${{ matrix.project.name }}
+
+    runs-on: [self-hosted, linux]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.project.directory }}
+        run: npm ci
+
+      - name: Run tests
+        working-directory: ${{ matrix.project.directory }}
+        run: npx mocha
+  
+  selenium-run-xtracer:
+  
+    name: Selenium - XTRacer
+
+    runs-on: [self-hosted, linux]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: XTRacer/Testes_Selenium
+        run: npm ci
+
+      - name: Run tests
+        working-directory: XTRacer/Testes_Selenium
+        run: npx mocha test/login.spec.js test/selecaoProdutos.spec.js
+        env: 
+          TEST_EMAIL: ${{ secrets.EMAIL }} 
+          TEST_PASSWORD: ${{ secrets.SENHA }} 
+          TEST_CEP: ${{ secrets.CEP }}          
