@@ -1,0 +1,93 @@
+import HomePage from '../pages/HomePage.js';
+
+import User from '../fixtures/User.js';
+
+import ProdutosPage from '../pages/ProdutosPage.js';
+
+describe('Realizar Login', () => {
+
+    it('Login com dados válidos', () => {
+
+        const user = User.gerarUsuario();
+
+        HomePage.abrir();
+
+        HomePage.preencherUsuario(user);
+
+        HomePage.preencherSenha(user);
+
+        HomePage.clicarEnviar();
+
+        cy.url().should('include', 'inventory');
+
+        ProdutosPage.elements.productsTitle().should('have.text', 'Products');
+    });
+
+    it('Login com usuário inválido', () => {
+
+        const user = User.gerarUsuario();
+
+        user.username = 'user';
+
+        HomePage.abrir();
+
+        HomePage.preencherUsuario(user);
+
+        HomePage.preencherSenha(user);
+
+        HomePage.clicarEnviar();
+
+        HomePage.elements.loginError().should('be.visible').and('contain', 'Username and password do not match');
+
+        HomePage.elements.loginButton().should('be.visible');
+    });
+
+    it('Login com senha inválida', () => {
+
+        const user = User.gerarUsuario();
+
+        user.password = 'sauce';
+
+        HomePage.abrir();
+
+        HomePage.preencherUsuario(user);
+
+        HomePage.preencherSenha(user);
+
+        HomePage.clicarEnviar();
+
+        HomePage.elements.loginError().should('be.visible').and('contain', 'Username and password do not match');
+
+        HomePage.elements.loginButton().should('be.visible');
+    });
+
+    it('Login com usuário não informado', () => {
+
+        const user = User.gerarUsuario();
+
+        HomePage.abrir();
+
+        HomePage.preencherSenha(user);
+
+        HomePage.clicarEnviar();
+
+        HomePage.elements.userRequired().should('be.visible').and('contain', 'Username is required');
+
+        HomePage.elements.loginButton().should('be.visible');
+    });
+
+    it('Login com senha não informada', () => {
+
+        const user = User.gerarUsuario();
+
+        HomePage.abrir();
+
+        HomePage.preencherUsuario(user);
+
+        HomePage.clicarEnviar();
+
+        HomePage.elements.passwordRequired().should('be.visible').and('contain', 'Password is required');
+
+        HomePage.elements.loginButton().should('be.visible');
+    });
+});
